@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Valve.VR;
+using VRTK;
 
 [ExecuteInEditMode]
 public class VRTK_RoomExtender_PlayAreaGizmo : MonoBehaviour

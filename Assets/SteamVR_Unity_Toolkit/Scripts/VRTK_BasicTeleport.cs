@@ -36,7 +36,6 @@ namespace VRTK
         private float fadeInTime = 0f;
         private float maxBlinkTransitionSpeed = 1.5f;
         private float maxBlinkDistance = 33f;
-        private SteamVR_ControllerManager controllerManager;
 
         public void InitDestinationSetListener(GameObject markerMaker, bool register)
         {
@@ -63,7 +62,6 @@ namespace VRTK
         {
             Utilities.SetPlayerObject(gameObject, VRTK_PlayerObject.ObjectTypes.CameraRig);
             eyeCamera = Utilities.AddCameraFade();
-            controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
         }
 
         protected virtual void OnEnable()
@@ -99,7 +97,7 @@ namespace VRTK
         protected virtual void Blink(float transitionSpeed)
         {
             fadeInTime = transitionSpeed;
-            SteamVR_Fade.Start(Color.black, 0);
+            VRTK_SDK_Bridge.HeadsetFade(Color.black, 0);
             Invoke("ReleaseBlink", blinkPause);
         }
 
@@ -175,21 +173,20 @@ namespace VRTK
 
         private void ReleaseBlink()
         {
-            SteamVR_Fade.Start(Color.clear, fadeInTime);
+            VRTK_SDK_Bridge.HeadsetFade(Color.clear, fadeInTime);
             fadeInTime = 0f;
         }
 
         private void InitDestinationMarkerListeners(bool state)
         {
-            if (controllerManager)
-            {
-                InitDestinationSetListener(controllerManager.left, state);
-                InitDestinationSetListener(controllerManager.right, state);
-            }
+            var leftHand = VRTK_SDK_Bridge.GetControllerLeftHand();
+            var rightHand = VRTK_SDK_Bridge.GetControllerRightHand();
+            InitDestinationSetListener(leftHand, state);
+            InitDestinationSetListener(rightHand, state);
 
             foreach (var destinationMarker in FindObjectsOfType<VRTK_DestinationMarker>())
             {
-                if (destinationMarker.gameObject != controllerManager.left && destinationMarker.gameObject != controllerManager.right)
+                if (destinationMarker.gameObject != leftHand && destinationMarker.gameObject != rightHand)
                 {
                     InitDestinationSetListener(destinationMarker.gameObject, state);
                 }

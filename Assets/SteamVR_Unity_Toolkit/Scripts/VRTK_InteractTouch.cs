@@ -32,7 +32,7 @@ namespace VRTK
         private GameObject lastTouchedObject = null;
         private bool updatedHideControllerOnTouch = false;
 
-        private SteamVR_TrackedObject trackedController;
+        private uint controllerIndex;
         private VRTK_ControllerActions controllerActions;
         private GameObject controllerCollisionDetector;
         private bool triggerRumble;
@@ -59,7 +59,7 @@ namespace VRTK
         public ObjectInteractEventArgs SetControllerInteractEvent(GameObject target)
         {
             ObjectInteractEventArgs e;
-            e.controllerIndex = (uint)trackedController.index;
+            e.controllerIndex = controllerIndex;
             e.target = target;
             return e;
         }
@@ -139,7 +139,7 @@ namespace VRTK
 
         private void Awake()
         {
-            trackedController = GetComponent<SteamVR_TrackedObject>();
+            controllerIndex = VRTK_DeviceFinder.GetControllerIndex(gameObject);
             controllerActions = GetComponent<VRTK_ControllerActions>();
             Utilities.SetPlayerObject(gameObject, VRTK_PlayerObject.ObjectTypes.Controller);
             destroyColliderOnDisable = false;
